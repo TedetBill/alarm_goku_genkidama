@@ -8,33 +8,33 @@
 LiquidCrystal lcd(7, 8, 9, 10, 11, 12); //initialisation communication's pins with LCD screen
 
 
-const int L1 = 2;               // pin 2 correspond to led1
-const int L2 = 3;               // pin 3 correspond to led2
-const int L3 = 4;               // pin 4 correspond to led3
-const int bp1 = 0;              // pin 6 correspond to button 1
-const int bp2 = 1;              // pin 5 correspond to button 2
-const int bp3 = 2;              // pin 13 correspond to button 3
-int i = 0;                      // i is used to false timeclock 
+const int L1 = 2;            // pin 2 correspond to led1
+const int L2 = 3;            // pin 3 correspond to led2
+const int L3 = 4;            // pin 4 correspond to led3
+const int bp1 = 0;           // pin 6 correspond to button 1
+const int bp2 = 1;           // pin 5 correspond to button 2
+const int bp3 = 2;           // pin 13 correspond to button 3
+int i = 0;                   // i is used to false timeclock 
 int j = 0;
-int heure = 23;                 // init's hours
-int minute = 57;                // init's minutes  
-int h_reveil = 0;               // alarm clock's hours
-int m_reveil = 0;               // alarm clock's minutes
-String s = "ALARM ON";          // s is used to alarm clock's detection 
-String mode = "Mode Auto";      // mode is used to detection's mode (auto or manual)
-int petit_delay = 50;           // small delay de 50ms
-int long_delay = 700;           // long delay de 700ms
-int moy_delay = 300;            // middle delay de 300ms
-int etat_bp1_int;               // state button 1
-int etat_bp2_int;               // state button 2
-int etat_bp3_int;               // state button 3
-boolean etat_bp1;               // state button 1
-boolean etat_bp2;               // state button 2
-boolean etat_bp3;               // state button 3
-boolean etat_reveil=0;          // alarm clock on = 1 , off = 0;
-boolean dernier_etat_bp1 = LOW; // memory to last action to button 1
-boolean dernier_etat_bp2 = LOW; // memory to last action to button 2
-boolean dernier_etat_bp3 = LOW; // memory to last action to button 3
+int hour = 23;               // init's hours
+int minute = 57;             // init's minutes  
+int h_alarm_clock = 0;       // alarm clock's hours
+int m_alarm_clock = 0;       // alarm clock's minutes
+String s = "ALARM ON";       // s is used to alarm clock's detection 
+String mode = "Mode Auto";   // mode is used to detection's mode (auto or manual)
+int small_delay = 50;        // small delay de 50ms
+int long_delay = 700;        // long delay de 700ms
+int medium_delay = 300;      // medium delay de 300ms
+int state_bp1_int;           // state button 1
+int state_bp2_int;           // state button 2
+int state_bp3_int;           // state button 3
+boolean state_bp1;           // state button 1
+boolean state_bp2;           // state button 2
+boolean state_bp3;           // state button 3
+boolean state_alarm_clock=0; // alarm clock on = 1 , off = 0;
+boolean last_etat_bp1 = LOW; // memory to last action to button 1
+boolean last_etat_bp2 = LOW; // memory to last action to button 2
+boolean last_etat_bp3 = LOW; // memory to last action to button 3
 
 
     
@@ -50,87 +50,87 @@ void setup() {
     pinMode(L2, OUTPUT); // L2 is a output pin
     pinMode(L3, OUTPUT); // L3 is a output pin
     
-    etat_bp1=analogRead(bp1); // read value to bp1 and affect it in variable 'etat_bp1'
-    etat_bp2=analogRead(bp2); // read value to bp2 and affect it in variable 'etat_bp2'
-    etat_bp3=analogRead(bp2); // read value to bp3 and affect it in variable 'etat_bp3'
+    state_bp1=analogRead(bp1); // read value to bp1 and affect it in variable 'state_bp1'
+    state_bp2=analogRead(bp2); // read value to bp2 and affect it in variable 'state_bp2'
+    state_bp3=analogRead(bp2); // read value to bp3 and affect it in variable 'state_bp3'
 
     
 }
 
 void loop() {
 
-      delay(moy_delay);
+      delay(medium_delay);
     do{
         lcd.clear();
         affiche_heure();
-        dernier_etat_bp1 = etat_bp1;
-        dernier_etat_bp2 = etat_bp2;
-        dernier_etat_bp3 = etat_bp3;
+        last_etat_bp1 = state_bp1;
+        last_etat_bp2 = state_bp2;
+        last_etat_bp3 = state_bp3;
         
         lecture_bp();
-      if((heure==h_reveil) && (minute==m_reveil) && (s=="ALARM ON")){
-        etat_reveil=1;
+      if((hour==h_alarm_clock) && (minute==m_alarm_clock) && (s=="ALARM ON")){
+        state_alarm_clock=1;
         }
-      delay(petit_delay);
-      //Serial.println(etat_bp1);
-    }while((etat_bp1 !=1 ) && (etat_bp2 !=1 ) && (etat_bp3 !=1 ) && (etat_reveil != 1));
+      delay(small_delay);
+      //Serial.println(state_bp1);
+    }while((state_bp1 !=1 ) && (state_bp2 !=1 ) && (state_bp3 !=1 ) && (state_alarm_clock != 1));
 
 
-    if(etat_reveil==1){
-      Serial.println(etat_reveil);
+    if(state_alarm_clock==1){
+      Serial.println(state_alarm_clock);
       alarme_activated();
     }
-    if((etat_bp3 == 1 ) && (etat_bp1==0) && (etat_bp2==0) && (dernier_etat_bp3 == 0)){
+    if((state_bp3 == 1 ) && (state_bp1==0) && (state_bp2==0) && (last_etat_bp3 == 0)){
           alarme_menu();
     }
     
     
-    if((etat_bp1==1) && (etat_bp2==0) && (etat_bp3 == 0) && (dernier_etat_bp1 == 0)){ // bp1 id used to actived/disactived alarm clock
+    if((state_bp1==1) && (state_bp2==0) && (state_bp3 == 0) && (last_etat_bp1 == 0)){ // bp1 id used to actived/disactived alarm clock
           alarme_mode();
     }
     
-    if((etat_bp2==1) && (etat_bp1==0) && (etat_bp3 == 0) && (dernier_etat_bp2 == 0)){ // bp2 is used to change manual mode and auto mode
+    if((state_bp2==1) && (state_bp1==0) && (state_bp3 == 0) && (last_etat_bp2 == 0)){ // bp2 is used to change manual mode and auto mode
           j++;
           led_modes();    
     }
     lcd.clear();
     affiche_heure();
-    delay(petit_delay);
+    delay(small_delay);
     i++;      
 }
 
 
 void lecture_bp(){
-      etat_bp1_int = analogRead(bp1);
-      //Serial.println(etat_bp1_int);
-      if(etat_bp1_int > 650)
+      state_bp1_int = analogRead(bp1);
+      //Serial.println(state_bp1_int);
+      if(state_bp1_int > 650)
       {
-        etat_bp1=1;
+        state_bp1=1;
       }
-      else if(etat_bp1_int < 650){
-        etat_bp1=0;
+      else if(state_bp1_int < 650){
+        state_bp1=0;
       }
-      etat_bp2_int = analogRead(bp2);
-      if(etat_bp2_int > 650)
+      state_bp2_int = analogRead(bp2);
+      if(state_bp2_int > 650)
       {
-        etat_bp2=1;
+        state_bp2=1;
       }
-      else if(etat_bp2_int < 650){
-        etat_bp2=0;
+      else if(state_bp2_int < 650){
+        state_bp2=0;
       }
-      etat_bp3_int = analogRead(bp3);
-      if(etat_bp3_int > 650)
+      state_bp3_int = analogRead(bp3);
+      if(state_bp3_int > 650)
       {
-        etat_bp3=1;
+        state_bp3=1;
       }
-      else if(etat_bp3_int < 650){
-        etat_bp3=0;
+      else if(state_bp3_int < 650){
+        state_bp3=0;
       }
 }
 void alarme_activated(){
   led_off();
   led_on_delay();
-  etat_reveil=0;
+  state_alarm_clock=0;
   delay(long_delay);
 }
 
@@ -142,58 +142,58 @@ void alarme_menu(){
           reglage_alarme();
           affiche_alarme();
           lecture_bp();
-          dernier_etat_bp1 = etat_bp1;
-          dernier_etat_bp2 = etat_bp2;
-          delay(petit_delay);
-      }while((etat_bp3 != 1));
+          last_etat_bp1 = state_bp1;
+          last_etat_bp2 = state_bp2;
+          delay(small_delay);
+      }while((state_bp3 != 1));
 }
 
 void reglage_alarme(){
     lecture_bp();
-    Serial.println(etat_bp1);
-    Serial.println(etat_bp2);
-  if((etat_bp1==1) && (dernier_etat_bp1 == 0)){
-    h_reveil++;
+    Serial.println(state_bp1);
+    Serial.println(state_bp2);
+  if((state_bp1==1) && (last_etat_bp1 == 0)){
+    h_alarm_clock++;
   }
-  if((etat_bp2==1) && (dernier_etat_bp2 ==0)){
-    m_reveil++;
+  if((state_bp2==1) && (last_etat_bp2 ==0)){
+    m_alarm_clock++;
   }
 }
 
 void affiche_alarme(){
-   if(m_reveil>59){
-    m_reveil=0;
-    heure++;
+   if(m_alarm_clock>59){
+    m_alarm_clock=0;
+    hour++;
    }
-   if(h_reveil>23){
-    h_reveil=0;
+   if(h_alarm_clock>23){
+    h_alarm_clock=0;
    }
    
-   if((h_reveil<=9) && (m_reveil<=9)){ // both inferiors to 10
+   if((h_alarm_clock<=9) && (m_alarm_clock<=9)){ // both inferiors to 10
     lcd.clear();
     lcd.print("0");
-    lcd.print(h_reveil);
+    lcd.print(h_alarm_clock);
     lcd.print(":0");
-    lcd.print(m_reveil);
+    lcd.print(m_alarm_clock);
   }
-  if((h_reveil<=9) && (m_reveil>=10)){ // hour inferior to 10 et minute superior
+  if((h_alarm_clock<=9) && (m_alarm_clock>=10)){ // hour inferior to 10 et minute superior
     lcd.clear();
     lcd.print("0");
-    lcd.print(h_reveil);
+    lcd.print(h_alarm_clock);
     lcd.print(":");
-    lcd.print(m_reveil);
+    lcd.print(m_alarm_clock);
   }
-  if((h_reveil>=10) && (m_reveil<=9)){ // minute inferior to 10 and hour superior
+  if((h_alarm_clock>=10) && (m_alarm_clock<=9)){ // minute inferior to 10 and hour superior
     lcd.clear();
-    lcd.print(h_reveil);
+    lcd.print(h_alarm_clock);
     lcd.print(":0");
-    lcd.print(m_reveil);
+    lcd.print(m_alarm_clock);
   }
-  if((h_reveil>=10) && (m_reveil>=10)){ // both superiors to 10
+  if((h_alarm_clock>=10) && (m_alarm_clock>=10)){ // both superiors to 10
     lcd.clear();
-    lcd.print(h_reveil);
+    lcd.print(h_alarm_clock);
     lcd.print(":");
-    lcd.print(m_reveil);
+    lcd.print(m_alarm_clock);
   }
 }
 
@@ -205,39 +205,39 @@ void affiche_heure(){
       
    if(minute>59){
     minute=0;
-    heure++;
+    hour++;
    }
-   if(heure>23){
-    heure=0;
+   if(hour>23){
+    hour=0;
    }
    
-   if((heure<=9) && (minute<=9)){ // both inferiors to 10
+   if((hour<=9) && (minute<=9)){ // both inferiors to 10
     lcd.clear();
     lcd.setCursor(0,1);
     lcd.print("0");
-    lcd.print(heure);
+    lcd.print(hour);
     lcd.print(":0");
     lcd.print(minute);
   }
-  if((heure<=9) && (minute>=10)){ // hour inferior to 10 and minute superior
+  if((hour<=9) && (minute>=10)){ // hour inferior to 10 and minute superior
     lcd.clear();
     lcd.setCursor(0,1);
     lcd.print("0");
-    lcd.print(heure);
+    lcd.print(hour);
     lcd.print(":");
     lcd.print(minute);
   }
-  if((heure>=10) && (minute<=9)){ // minute inferior to 10 and hour superior
+  if((hour>=10) && (minute<=9)){ // minute inferior to 10 and hour superior
     lcd.clear();
     lcd.setCursor(0,1);
-    lcd.print(heure);
+    lcd.print(hour);
     lcd.print(":0");
     lcd.print(minute);
   }
-  if((heure>=10) && (minute>=10)){ // both superiors to 10
+  if((hour>=10) && (minute>=10)){ // both superiors to 10
     lcd.clear();
     lcd.setCursor(0,1);
-    lcd.print(heure);
+    lcd.print(hour);
     lcd.print(":");
     lcd.print(minute);
   }
@@ -256,7 +256,7 @@ void alarme_mode(){
         lcd.clear();
 }
 void led_modes(){
-      delay(petit_delay);
+      delay(small_delay);
       mode = etat_mode(mode);
       lcd.clear();
       if(mode=="Mode Manu"){
