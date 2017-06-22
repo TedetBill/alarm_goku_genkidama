@@ -5,54 +5,54 @@
 // Format de l'heure en AM/PM (02:24 PM)
 //------------------------------------------------------------
 
-LiquidCrystal lcd(7, 8, 9, 10, 11, 12); //Initialisation des pins de communication avec l'afficheur LCD
+LiquidCrystal lcd(7, 8, 9, 10, 11, 12); //initialisation communication's pins with LCD screen
 
 
-const int L1 = 2;     // La broche 2 de l'arduino correspond à la led1
-const int L2 = 3;     // La broche 3 de l'arduino correspond à la led2
-const int L3 = 4;     // La broche 4 de l'arduino correspond à la led3
-const int bp1 = 0;  // La broche 6 de l'arduino correspond au boutton poussoir 1
-const int bp2 = 1;  // La broche 5 de l'arduino correspond au boutton poussoir 2
-const int bp3 = 2; // La broche 13 de l'arduino correspond au boutton poussoir 3
-int i = 0;              // I va servir au faux compteur de temps 
+const int L1 = 2;               // pin 2 correspond to led1
+const int L2 = 3;               // pin 3 correspond to led2
+const int L3 = 4;               // pin 4 correspond to led3
+const int bp1 = 0;              // pin 6 correspond to button 1
+const int bp2 = 1;              // pin 5 correspond to button 2
+const int bp3 = 2;              // pin 13 correspond to button 3
+int i = 0;                      // i is used to false timeclock 
 int j = 0;
-int heure = 23;       // Heure d'initialisation
-int minute = 57;      // Minute d'init
-int h_reveil = 0;     // Heure reveil
-int m_reveil = 0;     // Minute reveil
-String s = "ALARM ON";  // s sert à la detection du reveil
-String mode = "Mode Auto"; // mode sert à la detection du mode
-int petit_delay = 50; // petit delay de 50ms
-int long_delay = 700; // long delay de 700ms
-int moy_delay = 300;  // moyen delay de 300ms
-int etat_bp1_int;     // etat du bouton poussoir 1
-int etat_bp2_int;     // etat du bouton poussoir 2
-int etat_bp3_int;     // etat du bouton poussoir 3
-boolean etat_bp1;     // etat du bouton poussoir 1
-boolean etat_bp2;     // etat du bouton poussoir 2
-boolean etat_bp3;     // etat du bouton poussoir 3
-boolean etat_reveil=0;// reveil actif = 1 , inactif = 0;
-boolean dernier_etat_bp1 = LOW; // mémoire de la dernière action du boutton 1
-boolean dernier_etat_bp2 = LOW; // mémoire de la dernière action du boutton 2
-boolean dernier_etat_bp3 = LOW; // mémoire de la dernière action du boutton 3
+int heure = 23;                 // init's hours
+int minute = 57;                // init's minutes  
+int h_reveil = 0;               // alarm clock's hours
+int m_reveil = 0;               // alarm clock's minutes
+String s = "ALARM ON";          // s is used to alarm clock's detection 
+String mode = "Mode Auto";      // mode is used to detection's mode (auto or manual)
+int petit_delay = 50;           // small delay de 50ms
+int long_delay = 700;           // long delay de 700ms
+int moy_delay = 300;            // middle delay de 300ms
+int etat_bp1_int;               // state button 1
+int etat_bp2_int;               // state button 2
+int etat_bp3_int;               // state button 3
+boolean etat_bp1;               // state button 1
+boolean etat_bp2;               // state button 2
+boolean etat_bp3;               // state button 3
+boolean etat_reveil=0;          // alarm clock on = 1 , off = 0;
+boolean dernier_etat_bp1 = LOW; // memory to last action to button 1
+boolean dernier_etat_bp2 = LOW; // memory to last action to button 2
+boolean dernier_etat_bp3 = LOW; // memory to last action to button 3
 
 
     
 void setup() {
     
     
-    Serial.begin(9600); // Init du serial 
-    lcd.begin(8,2);     // Init de l'ecran lcd en 8 charactères x 2 lignes
-    lcd.print("INITIALISATION");  
+    Serial.begin(9600); // serial init
+    lcd.begin(8,2);     // init to LCD screen in 8 characters x 2 lines
+    lcd.print("INITIALISATION");
     delay(long_delay);
 
-    pinMode(L1, OUTPUT); //L1 est une broche de sortie
-    pinMode(L2, OUTPUT); //L2 est une broche de sortie
-    pinMode(L3, OUTPUT); //L3 est une broche de sortie
+    pinMode(L1, OUTPUT); // L1 is a output pin
+    pinMode(L2, OUTPUT); // L2 is a output pin
+    pinMode(L3, OUTPUT); // L3 is a output pin
     
-    etat_bp1=analogRead(bp1); //  on lit la valeur du bp1 et on l’affecte à la variable "etat_bp1"
-    etat_bp2=analogRead(bp2); //  on lit la valeur du bp2 et on l’affecte à la variable "etat_bp2"
-    etat_bp3=analogRead(bp2); //  on lit la valeur du bp3 et on l’affecte à la variable "etat_bp3"
+    etat_bp1=analogRead(bp1); // read value to bp1 and affect it in variable 'etat_bp1'
+    etat_bp2=analogRead(bp2); // read value to bp2 and affect it in variable 'etat_bp2'
+    etat_bp3=analogRead(bp2); // read value to bp3 and affect it in variable 'etat_bp3'
 
     
 }
@@ -85,21 +85,18 @@ void loop() {
     }
     
     
-    if((etat_bp1==1) && (etat_bp2==0) && (etat_bp3 == 0) && (dernier_etat_bp1 == 0)){ // bp1 sert à activer/desactiver l'alarme
+    if((etat_bp1==1) && (etat_bp2==0) && (etat_bp3 == 0) && (dernier_etat_bp1 == 0)){ // bp1 id used to actived/disactived alarm clock
           alarme_mode();
     }
     
-    if((etat_bp2==1) && (etat_bp1==0) && (etat_bp3 == 0) && (dernier_etat_bp2 == 0)){ //bp2 sert a changer du mode auto au mode manu
+    if((etat_bp2==1) && (etat_bp1==0) && (etat_bp3 == 0) && (dernier_etat_bp2 == 0)){ // bp2 is used to change manual mode and auto mode
           j++;
           led_modes();    
     }
     lcd.clear();
     affiche_heure();
     delay(petit_delay);
-    i++;
-    
-
-          
+    i++;      
 }
 
 
@@ -172,27 +169,27 @@ void affiche_alarme(){
     h_reveil=0;
    }
    
-   if((h_reveil<=9) && (m_reveil<=9)){ //Les deux inferieurs a 10
+   if((h_reveil<=9) && (m_reveil<=9)){ // both inferiors to 10
     lcd.clear();
     lcd.print("0");
     lcd.print(h_reveil);
     lcd.print(":0");
     lcd.print(m_reveil);
   }
-  if((h_reveil<=9) && (m_reveil>=10)){ //Heure inferieur a 10 et minute superieur
+  if((h_reveil<=9) && (m_reveil>=10)){ // hour inferior to 10 et minute superior
     lcd.clear();
     lcd.print("0");
     lcd.print(h_reveil);
     lcd.print(":");
     lcd.print(m_reveil);
   }
-  if((h_reveil>=10) && (m_reveil<=9)){ //Minute inferieur a 10 et heure superieur
+  if((h_reveil>=10) && (m_reveil<=9)){ // minute inferior to 10 and hour superior
     lcd.clear();
     lcd.print(h_reveil);
     lcd.print(":0");
     lcd.print(m_reveil);
   }
-  if((h_reveil>=10) && (m_reveil>=10)){ //Les deux superieur
+  if((h_reveil>=10) && (m_reveil>=10)){ // both superiors to 10
     lcd.clear();
     lcd.print(h_reveil);
     lcd.print(":");
@@ -214,7 +211,7 @@ void affiche_heure(){
     heure=0;
    }
    
-   if((heure<=9) && (minute<=9)){ //Les deux inferieurs a 10
+   if((heure<=9) && (minute<=9)){ // both inferiors to 10
     lcd.clear();
     lcd.setCursor(0,1);
     lcd.print("0");
@@ -222,7 +219,7 @@ void affiche_heure(){
     lcd.print(":0");
     lcd.print(minute);
   }
-  if((heure<=9) && (minute>=10)){ //Heure inferieur a 10 et minute superieur
+  if((heure<=9) && (minute>=10)){ // hour inferior to 10 and minute superior
     lcd.clear();
     lcd.setCursor(0,1);
     lcd.print("0");
@@ -230,14 +227,14 @@ void affiche_heure(){
     lcd.print(":");
     lcd.print(minute);
   }
-  if((heure>=10) && (minute<=9)){ //Minute inferieur a 10 et heure superieur
+  if((heure>=10) && (minute<=9)){ // minute inferior to 10 and hour superior
     lcd.clear();
     lcd.setCursor(0,1);
     lcd.print(heure);
     lcd.print(":0");
     lcd.print(minute);
   }
-  if((heure>=10) && (minute>=10)){ //Les deux superieur
+  if((heure>=10) && (minute>=10)){ // both superiors to 10
     lcd.clear();
     lcd.setCursor(0,1);
     lcd.print(heure);
@@ -290,41 +287,41 @@ void led_modes(){
 
 
 void led_off(){
-  digitalWrite(L1, LOW); //eteindre L1
-  digitalWrite(L2, LOW); //eteindre L2
-  digitalWrite(L3, LOW); //eteindre L3
+  digitalWrite(L1, LOW); // L1 off
+  digitalWrite(L2, LOW); // L2 off
+  digitalWrite(L3, LOW); // L3 off
 }
 
 void led_on(){
-  digitalWrite(L1, HIGH); //allumer L1
-  digitalWrite(L2, HIGH); //allumer L2
-  digitalWrite(L3, HIGH); //allumer L3
+  digitalWrite(L1, HIGH); // L1 on
+  digitalWrite(L2, HIGH); // L2 on
+  digitalWrite(L3, HIGH); // L3 on
 }
 
 void led_on1(){
-  digitalWrite(L1, HIGH); //allumer L1
-  digitalWrite(L2, LOW); //allumer L2
-  digitalWrite(L3, LOW); //allumer L3
+  digitalWrite(L1, HIGH); // L1 on
+  digitalWrite(L2, LOW);  // L2 off
+  digitalWrite(L3, LOW);  // L3 off
 }
 
 void led_on2(){
-  digitalWrite(L1, HIGH); //allumer L1
-  digitalWrite(L2, HIGH); //allumer L2
-  digitalWrite(L3, LOW); //allumer L3
+  digitalWrite(L1, HIGH); // L1 on
+  digitalWrite(L2, HIGH); // L2 on
+  digitalWrite(L3, LOW);  // L3 off
 }
 
 void led_on_delay(){
-  digitalWrite(L1, HIGH); //allumer L1
-  digitalWrite(L2, LOW); //allumer L2
-  digitalWrite(L3, LOW); //allumer L3
+  digitalWrite(L1, HIGH); // L1 on
+  digitalWrite(L2, LOW); // L2 off
+  digitalWrite(L3, LOW); // L3 off
   delay(3000);
-  digitalWrite(L1, HIGH); //allumer L1
-  digitalWrite(L2, HIGH); //allumer L2
-  digitalWrite(L3, LOW); //allumer L3
+  digitalWrite(L1, HIGH); // L1 on
+  digitalWrite(L2, HIGH); // L2 on
+  digitalWrite(L3, LOW); // L3 off
   delay(3000);
-  digitalWrite(L1, HIGH); //allumer L1
-  digitalWrite(L2, HIGH); //allumer L2
-  digitalWrite(L3, HIGH); //allumer L3
+  digitalWrite(L1, HIGH); // L1 on
+  digitalWrite(L2, HIGH); // L2 on
+  digitalWrite(L3, HIGH); // L3 on
   delay(3000);
 }
 
